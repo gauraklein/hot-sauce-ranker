@@ -19,9 +19,19 @@ function signin({ providers }) {
 export default signin;
 
 export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+
+  if (session) {
+    return {
+      redirect: { destination: "/" },
+    };
+  }
+
   return {
     props: {
       providers: await providers(context),
+      csrfToken: await csrfToken(context),
     },
   };
 }
